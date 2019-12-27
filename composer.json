@@ -1,0 +1,32 @@
+{
+    "name": "sinri/naive-job",
+    "description": "Naive Job Scheduler",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sinri Edogawa",
+            "email": "e.joshua.s.e@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "sinri/ark": "~3.0",
+        "sinri/ark-pdo": "^1.7",
+        "sinri/ark-curl": "^2.0",
+        "sinri/ark-mail": "^1.3",
+        "sinri/ark-queue": "^2.4",
+        "mtdowling/cron-expression": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "sinri\\NaiveJob\\": "src/"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        }
+    }
+}

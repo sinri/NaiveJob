@@ -1,0 +1,45 @@
+.layout{
+    border: 1px solid #d7dde4;
+    background: #f5f7f9;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.layout-logo{
+    width: 100px;
+    height: 30px;
+    background: #5b6270;
+    border-radius: 3px;
+    float: left;
+    position: relative;
+    top: 15px;
+    left: 20px;
+}
+.layout-nav{
+    width: 620px;
+    margin: 0 20px 0 auto;
+}
+.layout-footer-center{
+    text-align: center;
+}
+
+.ivu-col {
+    margin-top: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid gray;
+}
+
+th {
+    border: 1px solid gray;
+    padding: 2px;
+    background: lightblue;
+}
+
+td {
+    border: 1px solid gray;
+    padding: 2px;
+    text-align: center;
+}
