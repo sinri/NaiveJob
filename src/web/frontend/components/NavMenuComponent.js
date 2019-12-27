@@ -19,9 +19,9 @@ Vue.component(
                         <Icon type="ios-keypad"></Icon>
                         Queue
                     </Menu-Item>
-                    <Menu-Item name="3">
+                    <Menu-Item name="schedule">
                         <Icon type="ios-analytics"></Icon>
-                        Item 3
+                        Schedule
                     </Menu-Item>
                     <Menu-Item name="4">
                         <Icon type="ios-paper"></Icon>

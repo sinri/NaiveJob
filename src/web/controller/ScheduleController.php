@@ -46,7 +46,7 @@ class ScheduleController extends ArkWebController
                 throw new Exception("Cannot fetch schedule list");
             }
 
-            $this->_sayOK(['rows'=>$rows,$total=>$total]);
+            $this->_sayOK(['schedules' => $rows, 'total' => $total]);
         }catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }

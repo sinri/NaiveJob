@@ -17,6 +17,19 @@ PHP向任务调度解决方案
     
 ## API
 
-* 队列
-* 规划
-* 控制
+* 队列 QueueController
+    * 获取状况速览 dashboardData
+    * 任务队列明细 listTasksInQueue
+    * 取消任务 cancelTask
+    * 将任务入队 enqueueTask
+    * 复制一个任务 forkTask
+    * 创建一个任务 createTask
+* 规划 ScheduleController
+    * 获取规划列表 fetchScheduleList
+    * 创建任务模板 createTaskTemplate
+    * 创建规划 createSchedule
+    * 调整规划状态 switchSchedule
+* 控制 SwitchController
+    * 获取命令历史 getControlHistory
+    * 获取当前命令 getCurrentSwitch
+    * 发出命令 switchQueue

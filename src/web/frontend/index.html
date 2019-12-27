@@ -12,6 +12,7 @@
     <script src="./components/NavMenuComponent.js"></script>
     <script src="./components/DashboardComponent.js"></script>
     <script src="./components/QueueComponent.js"></script>
+    <script src="./components/ScheduleComponent.js"></script>
     <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
@@ -21,10 +22,9 @@
             <nav-menu-component v-on:nav_menu_selected="nav_menu_selected"></nav-menu-component>
         </Header>
         <Content :style="{padding: '0 50px','min-height':'400px'}">
-
             <dashboard-component v-show="selected_menu_item_name=='dashboard'"></dashboard-component>
             <queue-component v-show="selected_menu_item_name=='queue'"></queue-component>
-
+            <schedule-component v-show="selected_menu_item_name=='schedule'"></schedule-component>
         </Content>
         <Footer class="layout-footer-center">2019 &copy; Sinri Edogawa</Footer>
     </Layout>

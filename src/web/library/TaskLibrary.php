@@ -16,8 +16,6 @@ class TaskLibrary
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->queueModel=new NaiveJobQueueModel(false);
         $this->parameterModel=new NaiveJobParametersModel(false);
 //        $this->logger=Ark()->logger('web');
