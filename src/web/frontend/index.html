@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>NaiveJob</title>
-    <script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
-    <script src="https://unpkg.com/js-cookie@2.2.1/src/js.cookie.js"></script>
-    <script src="https://unpkg.com/vue@2.6.11/dist/vue.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/iview/dist/iview.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview/dist/styles/iview.css">
-    <script src="https://www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-2.0.js"></script>
+    <script src="./static/axios.js"></script>
+    <script src="./static/js.cookie.js"></script>
+    <script src="./static/vue.js"></script>
+    <script type="text/javascript" src="./static/iview/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./static/iview/styles/iview.css">
+    <script src="./static/SinriQF-2.0.js"></script>
     <script src="./components/NavMenuComponent.js"></script>
     <script src="./components/DashboardComponent.js"></script>
     <script src="./components/QueueComponent.js"></script>
     <script src="./components/ScheduleComponent.js"></script>
+    <script src="./components/CreateTemplateTaskComponent.js"></script>
     <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
@@ -25,6 +26,8 @@
             <dashboard-component v-show="selected_menu_item_name=='dashboard'"></dashboard-component>
             <queue-component v-show="selected_menu_item_name=='queue'"></queue-component>
             <schedule-component v-show="selected_menu_item_name=='schedule'"></schedule-component>
+            <create-template-task-component
+                    v-show="selected_menu_item_name=='create_template_task'"></create-template-task-component>
         </Content>
         <Footer class="layout-footer-center">2019 &copy; Sinri Edogawa</Footer>
     </Layout>

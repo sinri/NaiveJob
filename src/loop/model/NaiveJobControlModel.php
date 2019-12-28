@@ -4,11 +4,7 @@
 namespace sinri\NaiveJob\loop\model;
 
 
-use Exception;
-use sinri\ark\core\ArkHelper;
-use sinri\ark\database\model\ArkDatabaseTableModel;
 use sinri\ark\database\model\ArkSQLCondition;
-use sinri\NaiveJob\core\NaiveJobCore;
 use sinri\NaiveJob\core\NaiveJobTableModel;
 
 class NaiveJobControlModel extends NaiveJobTableModel
@@ -51,9 +47,9 @@ class NaiveJobControlModel extends NaiveJobTableModel
     public function writeLastControlValue($code,$value,$control_time=null){
         return $this->insert(
             [
-                'control_code'=>$code,
-                'control_value'=>$value,
-                'control_time'=>($control_time===null?$control_time:self::now()),
+                'control_code' => $code,
+                'control_value' => $value,
+                'control_time' => ($control_time !== null ? $control_time : self::now()),
             ]
         );
     }

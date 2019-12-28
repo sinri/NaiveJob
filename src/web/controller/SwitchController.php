@@ -75,7 +75,7 @@ class SwitchController extends ArkWebController
             if(!$afx){
                 throw new Exception("cannot switch queue: ".$this->controlModel->getPdoLastError());
             }
-            $this->_sayOK(['afx'=>$afx]);
+            $this->_sayOK(['afx' => $afx, 'current_value' => $this->controlModel->readLastControlValue('QUEUE_SWITCH')]);
         }catch (Exception $exception){
             $this->_sayFail($exception->getMessage());
         }

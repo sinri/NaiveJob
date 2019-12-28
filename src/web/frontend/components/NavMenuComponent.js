@@ -19,14 +19,23 @@ Vue.component(
                         <Icon type="ios-keypad"></Icon>
                         Queue
                     </Menu-Item>
-                    <Menu-Item name="schedule">
-                        <Icon type="ios-analytics"></Icon>
-                        Schedule
-                    </Menu-Item>
-                    <Menu-Item name="4">
-                        <Icon type="ios-paper"></Icon>
-                        Item 4
-                    </Menu-Item>
+<!--                    <Menu-Item name="schedule">-->
+<!--                        <Icon type="ios-analytics"></Icon>-->
+<!--                        Schedule-->
+<!--                    </Menu-Item>-->
+                    <Submenu name="ScheduleSubmenu">
+                        <template slot="title">
+                            <Icon type="ios-stats" />
+                            Schedule
+                        </template>
+                        <Menu-Group title="View">
+                            <Menu-Item name="schedule">Schedule List</Menu-Item>
+                        </Menu-Group>
+                        <MenuGroup title="Edit">
+                            <Menu-Item name="create_template_task">New Template Task</Menu-Item>
+                            <Menu-Item name="create_schedule">New Schedule</Menu-Item>
+                        </MenuGroup>
+                    </Submenu>
                 </div>
             </i-menu>`,
         methods:{

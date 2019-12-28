@@ -5,7 +5,6 @@ namespace sinri\NaiveJob\web\controller;
 
 
 use Exception;
-use sinri\ark\database\model\ArkDatabaseDynamicTableModel;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\NaiveJob\loop\model\NaiveJobParametersModel;
 use sinri\NaiveJob\loop\model\NaiveJobQueueModel;
@@ -40,21 +39,29 @@ class QueueController extends ArkWebController
     }
 
     public function listTasksInQueue(){
-        $conditions=[];
-        $status=$this->_readRequest('status');
-        if($status!==null){
-            $conditions['status']=$status;
+        $conditions = [];
+        $status = $this->_readRequest('status');
+        $taskId = $this->_readRequest("task_id");
+        $parentTaskId = $this->_readRequest("parent_task_id");
+        if ($status !== null) {
+            $conditions['status'] = $status;
+        }
+        if ($taskId !== null && $taskId > 0) {
+            $conditions['task_id'] = $taskId;
+        }
+        if ($parentTaskId !== null && $parentTaskId > 0) {
+            $conditions['parent_task_id'] = $parentTaskId;
         }
 
-        $sort="priority desc, enqueue_time asc, apply_time asc";
+        $sort = "priority desc, enqueue_time asc, apply_time asc";
 
-        $limit=$this->_readRequest("page_size",10,'/^\d+$/');
-        $page=$this->_readRequest("page",1,'/^\d+$/');
+        $limit = $this->_readRequest("page_size", 10, '/^\d+$/');
+        $page = $this->_readRequest("page", 1, '/^\d+$/');
 
-        $rows=$this->queueModel->selectRowsWithSort($conditions,$sort,$limit,$limit*($page-1));
-        $total=$this->queueModel->selectRowsForCount($conditions);
+        $rows = $this->queueModel->selectRowsWithSort($conditions, $sort, $limit, $limit * ($page - 1));
+        $total = $this->queueModel->selectRowsForCount($conditions);
 
-        $this->_sayOK(['tasks'=>$rows,'total'=>$total]);
+        $this->_sayOK(['tasks' => $rows, 'total' => $total]);
     }
 
     /**

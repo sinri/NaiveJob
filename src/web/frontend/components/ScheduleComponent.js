@@ -19,9 +19,7 @@ Vue.component(
                     </i-col>
                 </Row>
                 <Row>
-                    <i-col span="24">
-                        <i-button type="primary" @click="loadData" :loading="show_loading_spin">Load</i-button>
-                    </i-col>
+                    <i-col span="24"><h2>Conditions</h2></i-col>
                     <i-col span="24">
                         <Checkbox-Group v-model="status">
                             <Checkbox v-for="(option,index) in status_options" :label="option" :key="index">
@@ -31,14 +29,19 @@ Vue.component(
                         </Checkbox-Group>
                     </i-col>
                     <i-col span="24">
-                        <table>
+                        <i-button type="primary" @click="loadData" :loading="show_loading_spin">Load</i-button>
+                    </i-col>
+                    <i-col span="24"><h2>Schedule List</h2></i-col>
+                    <i-col span="24">
+                        <table style="width: 100%;">
                             <tr>
-                                <th>schedule_id</th>
-                                <th>cron_expression</th>
-                                <th>job_type</th>
-                                <th>job_code</th>
-                                <th>status</th>
-                                <th>parent_task_id</th>
+                                <th>Schedule ID</th>
+                                <th>Cron Expression</th>
+                                <th>Job Type</th>
+                                <th>Job Code</th>
+                                <th>Status</th>
+                                <th>Parent Task ID</th>
+                                <th>Action</th>
                             </tr>
                             <tr v-for="(schedule,index) in schedules" :key="index">
                                 <td>{{schedule.schedule_id}}</td>
@@ -47,6 +50,9 @@ Vue.component(
                                 <td>{{schedule.job_code}}</td>
                                 <td>{{schedule.status}}</td>
                                 <td>{{schedule.parent_task_id}}</td>
+                                <td>
+                                    <i-button type="text" size="small" @click="change_schedule_status(schedule,schedule.status==='ON'?'OFF':'ON')">TURN {{schedule.status==='ON'?'OFF':'ON'}}</i-button>
+                                </td>
                             </tr>
                         </table>
                     </i-col>
@@ -69,6 +75,10 @@ Vue.component(
                     (data) => {
                         this.schedules = data.schedules;
                         this.total = data.total;
+                        if ((this.page - 1) * this.page_size > this.total) {
+                            console.log("emmm")
+                            this.page_changed(1);
+                        }
                         this.show_loading_spin = false;
                     },
                     (error, status) => {
@@ -86,6 +96,23 @@ Vue.component(
             page_size_changed: function (pageSize) {
                 this.page_size = pageSize;
                 this.loadData();
+            },
+            change_schedule_status: function (schedule, new_status) {
+                SinriQF.api.call(
+                    'ScheduleController/switchSchedule',
+                    {
+                        schedule_id: schedule.schedule_id,
+                        status: new_status,
+                    },
+                    (data) => {
+                        SinriQF.iview.showSuccessMessage("TURN " + new_status + " " + schedule.schedule_id + ' DONE');
+                        schedule.status = new_status;
+                    },
+                    (error, status) => {
+                        SinriQF.iview.showErrorMessage(error);
+                        // this.show_loading_spin=false;
+                    }
+                );
             }
         },
         mounted: function () {

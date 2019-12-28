@@ -3,13 +3,15 @@ Vue.component(
     {
         data:function () {
             return {
-                status_options:['INIT', 'ENQUEUED', 'RUNNING', 'DONE', 'ERROR', 'CANCELLED'],
-                status:[],
-                tasks:[],
-                total:0,
-                page:1,
-                page_size:10,
-                show_loading_spin:true,
+                status_options: ['INIT', 'ENQUEUED', 'RUNNING', 'DONE', 'ERROR', 'CANCELLED', 'TEMPLATE'],
+                status: ['INIT', 'ENQUEUED', 'RUNNING', 'DONE', 'ERROR', 'CANCELLED'],
+                task_id: '',
+                parent_task_id: '',
+                tasks: [],
+                total: 0,
+                page: 1,
+                page_size: 10,
+                show_loading_spin: true,
             }
         },
         template: `<div>
@@ -21,6 +23,7 @@ Vue.component(
                 <Row>
                     <i-col span="24"><h2>Conditions</h2></i-col>
                     <i-col span="24">
+                        <span>Status</span>
                         <Checkbox-Group v-model="status">
                             <!-- INIT ENQUEUED RUNNING DONE ERROR CANCELLED -->
                             <Checkbox v-for="(option,index) in status_options" :label="option" :key="index">
@@ -30,12 +33,21 @@ Vue.component(
                         </Checkbox-Group>
                     </i-col>
                     <i-col span="24">
-                        <i-button type="primary" @click="loadData" :loading="show_loading_spin">Load</i-button>
+                        <span>Task ID</span>
+                        <i-input type="text" v-model="task_id" style="width: 150px"></i-input>
+                    </i-col>
+                    <i-col span="24">
+                        <span>Parent Task ID</span>
+                        <i-input type="text" v-model="parent_task_id" style="width: 150px"></i-input>
+                    </i-col>
+                    <i-col span="24">
+                        <i-button type="primary" @click="loadData" :loading="show_loading_spin">Search</i-button>
                     </i-col>
                 </Row>
                 <Row>
+                    <i-col span="24"><h2>Task List</h2></i-col>
                     <i-col span="24">
-                        <table>
+                        <table style="width: 100%;">
                             <tr>
                                 <th>ID</th>
                                 <th>Title</th>
@@ -61,35 +73,44 @@ Vue.component(
                                 <td>{{task.enqueue_time}}</td>
                                 <td>{{task.execute_time}}</td>
                                 <td>{{task.finish_time}}</td>
-                                <td>{{task.feedback}}</td>
+                                <td><div style="white-space: pre-line;">{{task.feedback}}</div></td>
                                 <td>{{task.pid}}</td>
                                 <td>{{task.parent_task_id}}</td>
-                                <td>...</td>
+                                <td>
+                                    <i-button type="text" size="small" v-if="task.status==='INIT' || task.status==='ENQUEUED'" @click="cancel_task(task)">Cancel</i-button>
+                                    <i-button type="text" size="small" v-if="task.status==='INIT' || task.status==='CANCELLED' || task.status==='ERROR'" @click="enqueue_task(task)">Enqueue</i-button>
+                                </td>
                             </tr>
                         </table>
                     </i-col>
                 </Row>
                 <Row>
                     <i-col span="24">
-                        <Page :total="total" :current="page" show-total show-sizer v-on:on-page-size-change="page_size_changed" v-on:on-change="page_changed"/>
+                        <Page :total="total" :current="page" show-total show-sizer show-elevator v-on:on-page-size-change="page_size_changed" v-on:on-change="page_changed"/>
                     </i-col>
                 </Row>
             </div>`,
         methods:{
-            loadData:function(){
-                this.show_loading_spin=true;
-                let conditions={
-                    page:this.page,
-                    page_size:this.page_size,
+            loadData:function() {
+                this.show_loading_spin = true;
+                let conditions = {
+                    page: this.page,
+                    page_size: this.page_size,
                 };
-                if(this.status && this.status.length>0)conditions.status=this.status;
+                if (this.status && this.status.length > 0) conditions.status = this.status;
+                if (this.task_id && this.task_id > 0) conditions.task_id = this.task_id;
+                if (this.parent_task_id && this.parent_task_id > 0) conditions.parent_task_id = this.parent_task_id;
                 SinriQF.api.call(
                     'QueueController/listTasksInQueue',
                     conditions,
-                    (data)=>{
-                        this.tasks=data.tasks;
-                        this.total=data.total;
-                        this.show_loading_spin=false;
+                    (data) => {
+                        this.tasks = data.tasks;
+                        this.total = data.total;
+                        if ((this.page - 1) * this.page_size > this.total) {
+                            console.log("emmm")
+                            this.page_changed(1);
+                        }
+                        this.show_loading_spin = false;
                     },
                     (error,status)=>{
                         //this.tasks=[];
@@ -99,13 +120,56 @@ Vue.component(
                     }
                 );
             },
-            page_changed:function(new_page){
-                this.page=new_page;
+            page_changed: function (new_page) {
+                console.log('page_changed -> ', new_page)
+                this.page = new_page;
                 this.loadData();
             },
-            page_size_changed:function (pageSize) {
-                this.page_size=pageSize;
+            page_size_changed: function (pageSize) {
+                this.page_size = pageSize;
                 this.loadData();
+            },
+            cancel_task: function (task) {
+                SinriQF.api.call(
+                    'QueueController/cancelTask',
+                    {
+                        task_id: task.task_id
+                    },
+                    (data) => {
+                        // this.tasks=data.tasks;
+                        // this.total=data.total;
+                        // this.show_loading_spin=false;
+                        SinriQF.iview.showSuccessMessage("Cancelled " + task.task_id);
+                        task.status = 'CANCELLED';
+                    },
+                    (error, status) => {
+                        //this.tasks=[];
+                        //this.total=0;
+                        SinriQF.iview.showErrorMessage(error);
+                        // this.show_loading_spin=false;
+                    }
+                );
+            },
+            enqueue_task: function (task) {
+                SinriQF.api.call(
+                    'QueueController/enqueueTask',
+                    {
+                        task_id: task.task_id
+                    },
+                    (data) => {
+                        // this.tasks=data.tasks;
+                        // this.total=data.total;
+                        // this.show_loading_spin=false;
+                        SinriQF.iview.showSuccessMessage("Enqueued " + task.task_id);
+                        task.status = 'ENQUEUED';
+                    },
+                    (error, status) => {
+                        //this.tasks=[];
+                        //this.total=0;
+                        SinriQF.iview.showErrorMessage(error);
+                        // this.show_loading_spin=false;
+                    }
+                );
             }
         },
         mounted:function () {
