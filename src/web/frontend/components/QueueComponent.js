@@ -77,8 +77,9 @@ Vue.component(
                                 <td>{{task.pid}}</td>
                                 <td>{{task.parent_task_id}}</td>
                                 <td>
-                                    <i-button type="text" size="small" v-if="task.status==='INIT' || task.status==='ENQUEUED'" @click="cancel_task(task)">Cancel</i-button>
-                                    <i-button type="text" size="small" v-if="task.status==='INIT' || task.status==='CANCELLED' || task.status==='ERROR'" @click="enqueue_task(task)">Enqueue</i-button>
+                                    <i-button type="warning" size="small" v-if="task.status==='INIT' || task.status==='ENQUEUED'" @click="cancel_task(task)">Cancel</i-button>
+                                    <i-button type="success" size="small" v-if="task.status==='INIT' || task.status==='CANCELLED' || task.status==='ERROR'" @click="enqueue_task(task)">Enqueue</i-button>
+                                    <i-button type="info" size="small" v-if="task.status==='DONE' || task.status==='TEMPLATE'" @click="fork_task(task)">Fork</i-button>
                                 </td>
                             </tr>
                         </table>
@@ -168,6 +169,21 @@ Vue.component(
                         //this.total=0;
                         SinriQF.iview.showErrorMessage(error);
                         // this.show_loading_spin=false;
+                    }
+                );
+            },
+            fork_task: function (task) {
+                SinriQF.api.call(
+                    'QueueController/forkTask',
+                    {
+                        task_id: task.task_id,
+                        enqueue_now: 'NO',
+                    },
+                    (data) => {
+                        SinriQF.iview.showSuccessMessage("Add task to queue and enqueued it: " + data.task_id);
+                    },
+                    (error, status) => {
+                        SinriQF.iview.showErrorMessage(error);
                     }
                 );
             }

@@ -20,13 +20,13 @@ Vue.component(
                     <i-col span="24"><h2>Switch</h2></i-col>
                     <i-col span="24">
                         <span>Current:</span> <span>{{queue_switch_value}} since {{queue_switch_value_time}}</span>
-                        <i-button type="info" icon="ios-refresh" :loading="show_loading_switch_value_span" @click="refreshSwitchValue">Refresh</i-button>
+                        <i-button type="info" icon="ios-refresh" :loading="show_loading_switch_value_span" @click="refreshSwitchValue" size="small">Refresh</i-button>
 <!--                        <i-switch :loading="queue_switch_value_changing" v-model="queue_switch_value" @on-change="queue_switch_value_changed"></i-switch>-->
                         <span>Action:</span>
                         <Button-Group>
-                            <i-button type="error" @click="queue_switch_value_changed('STOP')">STOP</i-button>
-                            <i-button type="warning" @click="queue_switch_value_changed('SLEEP')">SLEEP</i-button>
-                            <i-button type="primary" @click="queue_switch_value_changed('RUN')">RUN</i-button>
+                            <i-button type="error" @click="queue_switch_value_changed('STOP')" size="small">STOP</i-button>
+                            <i-button type="warning" @click="queue_switch_value_changed('SLEEP')" size="small">SLEEP</i-button>
+                            <i-button type="primary" @click="queue_switch_value_changed('RUN')" size="small">RUN</i-button>
                         </Button-Group>
                     </i-col>
                 </Row>

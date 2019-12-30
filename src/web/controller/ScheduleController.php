@@ -4,7 +4,9 @@
 namespace sinri\NaiveJob\web\controller;
 
 
+use Cron\CronExpression;
 use Exception;
+use sinri\ark\database\model\ArkSQLCondition;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\NaiveJob\loop\model\NaiveJobParametersModel;
 use sinri\NaiveJob\loop\model\NaiveJobQueueModel;
@@ -75,20 +77,24 @@ class ScheduleController extends ArkWebController
      */
     public function createSchedule(){
         try {
-            $cronExpression=$this->_readRequest("cron_expression");
-            $jobCode=$this->_readRequest("job_code");
-            $status=$this->_readRequest("status",NaiveJobScheduleModel::STATUS_OFF);
-            $parentTaskId=$this->_readRequest("parent_task_id");
+            $cronExpression = $this->_readRequest("cron_expression");
+            $jobCode = $this->_readRequest("job_code");
+            $status = $this->_readRequest("status", NaiveJobScheduleModel::STATUS_OFF);
+            $parentTaskId = $this->_readRequest("parent_task_id");
 
-            $templateTaskRow=$this->queueModel->selectRow(['task_id'=>$parentTaskId]);
-            if(empty($templateTaskRow)) throw new Exception("Template Task Id Invalid");
+            if (!CronExpression::isValidExpression($cronExpression)) {
+                throw new Exception("Cron Invalid");
+            }
 
-            $scheduleId=$this->scheduleModel->insert([
-                'cron_expression'=>$cronExpression,
-                'job_type'=>$templateTaskRow['job_type'],
-                'job_code'=>$jobCode,
-                'status'=>($status===NaiveJobScheduleModel::STATUS_ON?NaiveJobScheduleModel::STATUS_ON:NaiveJobScheduleModel::STATUS_OFF),
-                'parent_task_id'=>$parentTaskId,
+            $templateTaskRow = $this->queueModel->selectRow(['task_id' => $parentTaskId]);
+            if (empty($templateTaskRow)) throw new Exception("Template Task Id Invalid");
+
+            $scheduleId = $this->scheduleModel->insert([
+                'cron_expression' => $cronExpression,
+                'job_type' => $templateTaskRow['job_type'],
+                'job_code' => $jobCode,
+                'status' => ($status === NaiveJobScheduleModel::STATUS_ON ? NaiveJobScheduleModel::STATUS_ON : NaiveJobScheduleModel::STATUS_OFF),
+                'parent_task_id' => $parentTaskId,
             ]);
             if(!$scheduleId){
                 throw new Exception("Cannot create schedule: ".$this->scheduleModel->getPdoLastError());
@@ -109,13 +115,35 @@ class ScheduleController extends ArkWebController
             //$status=($status===NaiveJobScheduleModel::STATUS_ON?NaiveJobScheduleModel::STATUS_ON:NaiveJobScheduleModel::STATUS_OFF);
             $this->scheduleModel->update(['schedule_id'=>$scheduleId],['status'=>$status]);
 
-            $row=$this->scheduleModel->selectRow(['schedule_id'=>$scheduleId]);
-            if(!$row || $row['status']!==$status){
+            $row = $this->scheduleModel->selectRow(['schedule_id' => $scheduleId]);
+            if (!$row || $row['status'] !== $status) {
                 throw new Exception("Failed to switch schedule");
             }
 
-            $this->_sayOK(['schedule_id'=>$scheduleId,'status'=>$status]);
-        }catch (Exception $exception) {
+            $this->_sayOK(['schedule_id' => $scheduleId, 'status' => $status]);
+        } catch (Exception $exception) {
+            $this->_sayFail($exception->getMessage());
+        }
+    }
+
+    public function searchTemplateTask()
+    {
+        try {
+            $keyword = $this->_readRequest('keyword', '');
+
+            $rows = $this->queueModel->selectRows(
+                [
+                    ArkSQLCondition::makeConditionsUnion([
+                        'task_id' => ArkSQLCondition::makeStringContainsText('task_id', $keyword),
+                        'task_title' => ArkSQLCondition::makeStringContainsText('task_title', $keyword),
+                    ]),
+                    'status' => NaiveJobQueueModel::STATUS_TEMPLATE,
+                ],
+                10, 0
+            );
+
+            $this->_sayOK(['template_task_list' => $rows]);
+        } catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }
     }

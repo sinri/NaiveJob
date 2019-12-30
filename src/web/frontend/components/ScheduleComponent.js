@@ -51,7 +51,8 @@ Vue.component(
                                 <td>{{schedule.status}}</td>
                                 <td>{{schedule.parent_task_id}}</td>
                                 <td>
-                                    <i-button type="text" size="small" @click="change_schedule_status(schedule,schedule.status==='ON'?'OFF':'ON')">TURN {{schedule.status==='ON'?'OFF':'ON'}}</i-button>
+                                    <i-button type="info" size="small" @click="change_schedule_status(schedule,schedule.status==='ON'?'OFF':'ON')">TURN {{schedule.status==='ON'?'OFF':'ON'}}</i-button>
+                                    <i-button type="error" size="small" @click="fork_to_execute_now(schedule)">Run Once Now</i-button>
                                 </td>
                             </tr>
                         </table>
@@ -111,6 +112,21 @@ Vue.component(
                     (error, status) => {
                         SinriQF.iview.showErrorMessage(error);
                         // this.show_loading_spin=false;
+                    }
+                );
+            },
+            fork_to_execute_now: function (schedule) {
+                SinriQF.api.call(
+                    'QueueController/forkTask',
+                    {
+                        task_id: schedule.parent_task_id,
+                        enqueue_now: 'YES',
+                    },
+                    (data) => {
+                        SinriQF.iview.showSuccessMessage("Add task to queue and enqueued it: " + data.task_id);
+                    },
+                    (error, status) => {
+                        SinriQF.iview.showErrorMessage(error);
                     }
                 );
             }

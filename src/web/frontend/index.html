@@ -14,6 +14,7 @@
     <script src="./components/QueueComponent.js"></script>
     <script src="./components/ScheduleComponent.js"></script>
     <script src="./components/CreateTemplateTaskComponent.js"></script>
+    <script src="./components/CreateScheduleComponent.js"></script>
     <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
@@ -28,6 +29,7 @@
             <schedule-component v-show="selected_menu_item_name=='schedule'"></schedule-component>
             <create-template-task-component
                     v-show="selected_menu_item_name=='create_template_task'"></create-template-task-component>
+            <create-schedule-component v-show="selected_menu_item_name=='create_schedule'"></create-schedule-component>
         </Content>
         <Footer class="layout-footer-center">2019 &copy; Sinri Edogawa</Footer>
     </Layout>
