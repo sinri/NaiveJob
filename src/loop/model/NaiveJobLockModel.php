@@ -5,9 +5,10 @@ namespace sinri\NaiveJob\loop\model;
 
 
 use Exception;
+use sinri\ark\core\ArkHelper;
 use sinri\NaiveJob\core\NaiveJobTableModel;
 
-class NaiveJobParametersModel extends NaiveJobTableModel
+class NaiveJobLockModel extends NaiveJobTableModel
 {
 
     /**
@@ -15,29 +16,30 @@ class NaiveJobParametersModel extends NaiveJobTableModel
      */
     public function mappingTableName()
     {
-        return "naive_job_parameters";
+        return "naive_job_lock";
     }
 
     /**
      * @param $taskId
-     * @param $parameters
+     * @param $locks
      * @return bool|string
      * @throws Exception
      */
-    public function batchRegisterParametersForTask($taskId,$parameters){
+    public function batchRegisterLocksForTask($taskId, $locks)
+    {
         //if(empty($parameters))return true;
 
         $data = [];
-        foreach ($parameters as $parameter) {
+        foreach ($locks as $parameter) {
             $data[] = [
                 'task_id' => $taskId,
-                'name' => $parameter['name'],
-                'value' => $parameter['value'],
+                'lock_name' => ArkHelper::readTarget($parameter, ['lock_name'], ''),
+                'addition' => ArkHelper::readTarget($parameter, ['addition'], ''),
             ];
         }
         $afx = $this->batchInsert($data);
         if (empty($afx)) {
-            throw new Exception("Cannot register task parameters: " . $this->getPdoLastError());
+            throw new Exception("Cannot register task locks: " . $this->getPdoLastError());
         }
         return $afx;
     }

@@ -139,9 +139,10 @@ class QueueController extends ArkWebController
 
             $enqueueNow = $this->_readRequest('enqueue_now', 'NO');
 
-            $parameters=$this->_readRequest("parameters",[]);
+            $parameters = $this->_readRequest("parameters", []);
+            $locks = $this->_readRequest("locks", []);
 
-            $taskId=$this->taskLib->createTask($taskType,$taskTitle,$priority,$parameters,false,$enqueueNow==='YES');
+            $taskId = $this->taskLib->createTask($taskType, $taskTitle, $priority, $parameters, $locks, false, $enqueueNow === 'YES');
 
             $this->_sayOK(['task_id'=>$taskId]);
         }catch (Exception $exception) {

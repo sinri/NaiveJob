@@ -7,7 +7,6 @@ namespace sinri\NaiveJob\loop;
 use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\core\ArkLogger;
-use sinri\ark\database\pdo\ArkPDO;
 use sinri\ark\queue\parallel\ParallelQueueDaemonDelegate;
 use sinri\NaiveJob\loop\model\NaiveJobControlModel;
 use sinri\NaiveJob\loop\model\NaiveJobHeartbeatModel;
@@ -182,17 +181,31 @@ class NaiveJobLoopDelegate extends ParallelQueueDaemonDelegate
      */
     public function checkNextTaskImplement()
     {
-        $queue=(new NaiveJobQueueModel());
-        $taskRow=$queue->selectRowsWithSort(
-            ['status'=>NaiveJobQueueModel::STATUS_ENQUEUED],
-            'priority desc, enqueue_time asc',
-            1
-        );
-        if(!$taskRow || count($taskRow)<=0){
-            return false;
+        $retry = 0;
+        $job = false;
+        $queue = (new NaiveJobQueueModel());
+        while (true) {
+            $job = false;
+            $taskRow = $queue->selectRowsWithSort(
+                ['status' => NaiveJobQueueModel::STATUS_ENQUEUED],
+                'priority desc, enqueue_time asc',
+                1,
+                $retry
+            );
+            if (!$taskRow || count($taskRow) <= 0) {
+                break;
+            }
+            $this->logger->info(__METHOD__ . ' next task candidate found, checking locks ', ['row' => $taskRow[0], 'retry' => $retry]);
+
+            $job = NaiveJobBasement::factory($taskRow[0]);
+
+            if ($job->checkIfLocked()) {
+                $this->logger->warning(__METHOD__ . ' this task candidate is locked', ['locks' => $job->getBlockingLocks()]);
+                $retry++;
+                continue;
+            }
         }
-        $this->logger->info(__METHOD__.' next task found: ',['row'=>$taskRow[0]]);
-        return NaiveJobBasement::factory($taskRow[0]);
+        return $job;
     }
 
     /**

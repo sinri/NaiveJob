@@ -11,12 +11,12 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "sinri/ark": "~3.0",
-        "sinri/ark-pdo": "^1.7",
-        "sinri/ark-curl": "^2.0",
-        "sinri/ark-mail": "^1.3",
-        "sinri/ark-queue": "^2.4",
-        "mtdowling/cron-expression": "^1.2"
+      "sinri/ark": "~3.0",
+      "sinri/ark-pdo": "^1.7",
+      "sinri/ark-curl": "^2.0",
+      "sinri/ark-mail": "^1.3",
+      "sinri/ark-queue": "^2.5",
+      "mtdowling/cron-expression": "^1.2"
     },
     "autoload": {
         "psr-4": {

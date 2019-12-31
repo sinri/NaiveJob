@@ -9,6 +9,8 @@ use Psr\Log\LogLevel;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\core\ArkLogger;
 use sinri\ark\queue\parallel\ParallelQueueTask;
+use sinri\NaiveJob\core\NaiveJobCore;
+use sinri\NaiveJob\loop\model\NaiveJobLockModel;
 use sinri\NaiveJob\loop\model\NaiveJobParametersModel;
 
 abstract class NaiveJobBasement extends ParallelQueueTask
@@ -67,40 +69,6 @@ abstract class NaiveJobBasement extends ParallelQueueTask
         return $this->taskRow['task_type'];
     }
 
-    /**
-     * @return bool
-     * Run in parent process
-     */
-//    public function beforeExecute()
-//    {
-//        $this->readyToExecute = true;
-//        return $this->readyToExecute;
-//    }
-//
-//    public function afterExecute()
-//    {
-//        $this->readyToFinish = true;
-//        return $this->readyToFinish;
-//    }
-
-    /**
-     * @inheritDoc
-     */
-//    public function execute();
-//    {
-//        sleep(5);
-//        $result=rand(1,9);
-//        if($result>6){
-//            $this->done=false;
-//            $this->executeFeedback="Error-".$result;
-//            $this->executeResult=$result;
-//        }else{
-//            $this->done=true;
-//            $this->executeFeedback="Done-".$result;
-//            $this->executeResult=$result;
-//        }
-//    }
-
     public function readParameters($name,$default=null){
         return ArkHelper::readTarget($this->parameters,[$name],$default);
     }
@@ -110,14 +78,59 @@ abstract class NaiveJobBasement extends ParallelQueueTask
      * @return NaiveJobBasement
      * @throws Exception
      */
-    public static function factory($row){
-        $type=$row['task_type'];
+    public static function factory($row)
+    {
+        $type = $row['task_type'];
 
-        $className=__NAMESPACE__.'\\executor\\NaiveJobWith'.$type;
-        if(!class_exists($className)){
-            throw new Exception("This type may not be supported yet, class ".$className." could not be found");
+        $className = __NAMESPACE__ . '\\executor\\NaiveJobWith' . $type;
+        if (!class_exists($className)) {
+            throw new Exception("This type may not be supported yet, class " . $className . " could not be found");
         }
 
         return new $className($row);
+    }
+
+    private $blockingLocks = null;
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function checkIfLocked()
+    {
+        $sql = "select distinct njl.lock_name
+            from naive_job_queue njq
+            inner join naive_job_lock njl on njq.task_id = njl.task_id
+            where njq.status='RUNNING'";
+        $currentLocks = NaiveJobCore::getNewLoopDb()->getAll($sql);
+        if (empty($currentLocks)) {
+            $this->blockingLocks = [];
+            return false;
+        }
+
+        $requiredLocks = $this->getTaskReference();
+
+        $this->blockingLocks = array_intersect($requiredLocks, $currentLocks);
+        if (empty($this->blockingLocks)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getBlockingLocks()
+    {
+        return $this->blockingLocks;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLockList()
+    {
+        $locks = (new NaiveJobLockModel())->selectRows(['task_id' => $this->getTaskReference()]);
+        if (empty($locks)) return [];
+
+        return array_column($locks, 'lock_name');
     }
 }

@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "ebbbc392144ae0132e256ab51c6e2772",
-    "packages": [
-        {
-            "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.90",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "35f963386e6a189697fe4b14dc91fb42b17fda4b"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "7f67f810f9a4c07c9c0162536b79d8c4",
+  "packages": [
+    {
+      "name": "jaybizzle/crawler-detect",
+      "version": "v1.2.90",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/JayBizzle/Crawler-Detect.git",
+        "reference": "35f963386e6a189697fe4b14dc91fb42b17fda4b"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/35f963386e6a189697fe4b14dc91fb42b17fda4b",
                 "reference": "35f963386e6a189697fe4b14dc91fb42b17fda4b",
@@ -194,26 +194,26 @@
             ],
             "time": "2019-09-18T18:44:20+00:00"
         },
-        {
-            "name": "mtdowling/cron-expression",
-            "version": "v1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mtdowling/cron-expression.git",
-                "reference": "9504fa9ea681b586028adaaa0877db4aecf32bad"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mtdowling/cron-expression/zipball/9504fa9ea681b586028adaaa0877db4aecf32bad",
-                "reference": "9504fa9ea681b586028adaaa0877db4aecf32bad",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
+    {
+      "name": "mtdowling/cron-expression",
+      "version": "v1.2.3",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/mtdowling/cron-expression.git",
+        "reference": "9be552eebcc1ceec9776378f7dcc085246cacca6"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/mtdowling/cron-expression/zipball/9be552eebcc1ceec9776378f7dcc085246cacca6",
+        "reference": "9be552eebcc1ceec9776378f7dcc085246cacca6",
+        "shasum": "",
+        "mirrors": [
+          {
+            "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+            "preferred": true
+          }
+        ]
+      },
             "require": {
                 "php": ">=5.3.2"
             },
@@ -242,7 +242,7 @@
                 "cron",
                 "schedule"
             ],
-            "time": "2017-01-23T04:29:33+00:00"
+      "time": "2019-12-28T04:23:06+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -795,26 +795,26 @@
             "description": "The PDO Component for Ark 2",
             "time": "2019-08-20T13:51:03+00:00"
         },
-        {
-            "name": "sinri/ark-queue",
-            "version": "2.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sinri/Ark-Queue.git",
-                "reference": "2aa82b171338f2c4b20dfe5f110069292bcf2565"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/2aa82b171338f2c4b20dfe5f110069292bcf2565",
-                "reference": "2aa82b171338f2c4b20dfe5f110069292bcf2565",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
+    {
+      "name": "sinri/ark-queue",
+      "version": "2.5",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/sinri/Ark-Queue.git",
+        "reference": "8f99c7ffe3d77add7f641add1393b98cd254ba4e"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/8f99c7ffe3d77add7f641add1393b98cd254ba4e",
+        "reference": "8f99c7ffe3d77add7f641add1393b98cd254ba4e",
+        "shasum": "",
+        "mirrors": [
+          {
+            "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+            "preferred": true
+          }
+        ]
+      },
             "suggest": {
                 "ext-pcntl": "*",
                 "sinri/ark-lock": "^0.3"
@@ -836,7 +836,7 @@
                 }
             ],
             "description": "The queue component for Ark 2",
-            "time": "2019-12-20T07:28:25+00:00"
+      "time": "2019-12-30T05:34:37+00:00"
         }
     ],
     "packages-dev": [],

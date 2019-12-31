@@ -11,6 +11,7 @@ Vue.component(
                 parameters: {
                     command: '',
                 },
+                locks_text: '',
                 submitting: false,
             };
         },
@@ -38,6 +39,14 @@ Vue.component(
                     <i-input v-model="parameters.command" style="width: 400px" inline></i-input>
                 </i-col>
                 <i-col span="24">
+                    <h2>Locks</h2>
+                </i-col>
+                <i-col span="24">
+                    <span>Locks</span>
+                    <i-input type="textarea" v-model="locks_text" style="width: 400px" inline></i-input>
+                    <span>Each row for one lock name</span>
+                </i-col>
+                <i-col span="24">
                     <i-button type="primary" :loading="submitting" @click="submit_draft">Submit</i-button>
                 </i-col>
             </Row>`,
@@ -52,6 +61,14 @@ Vue.component(
                         command: this.parameters.command
                     }
                 };
+
+                let locks = locks_text.split(/[\r\n]+/);
+                for (let i = 0; i < locks.length; i++) {
+                    locks[i] = locks[i].trim();
+                }
+                locks = locks.filter(lock_name => lock_name.length > 0);
+                conditions['locks'] = locks;
+
                 SinriQF.api.call(
                     'ScheduleController/createTaskTemplate',
                     conditions,

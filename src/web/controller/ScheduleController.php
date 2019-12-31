@@ -63,10 +63,11 @@ class ScheduleController extends ArkWebController
             $taskType=$this->_readRequest("task_type");
             $priority=$this->_readRequest("priority");
 
-            $parameters=$this->_readRequest("parameters",[]);
+            $parameters = $this->_readRequest("parameters", []);
+            $locks = $this->_readRequest("locks", []);
 
-            $taskId=$this->taskLib->createTask($taskType,$taskTitle,$priority,$parameters,true,false);
-            $this->_sayOK(['task_id'=>$taskId]);
+            $taskId = $this->taskLib->createTask($taskType, $taskTitle, $priority, $parameters, $locks, true, false);
+            $this->_sayOK(['task_id' => $taskId]);
         }catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }
