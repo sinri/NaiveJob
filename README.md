@@ -33,3 +33,9 @@ PHP向任务调度解决方案
     * 获取命令历史 getControlHistory
     * 获取当前命令 getCurrentSwitch
     * 发出命令 switchQueue
+    
+## 数据库表结构
+
+Schema不限，建议使用UTF8MB4。
+
+建表语句，见 init-db.sql 。
